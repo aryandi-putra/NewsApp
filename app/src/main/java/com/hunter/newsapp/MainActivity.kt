@@ -38,7 +38,11 @@ class MainActivity : ComponentActivity() {
                             SplashScreen(navController = navController)
                         }
                         composable(route = Screen.TopHeadlines.route) {
-                            TopHeadlinesScreen()
+                            TopHeadlinesScreen(
+                                onArticleClick = { article ->
+                                    navController.navigate(Screen.Detail.createRoute(article.url))
+                                }
+                            )
                         }
                         composable(route = Screen.Search.route) {
                             SearchScreen()
