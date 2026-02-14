@@ -12,6 +12,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.hunter.newsapp.presentation.common.NewsItem
+import com.hunter.newsapp.presentation.common.ErrorState
+import com.hunter.newsapp.presentation.common.SizedCircularProgressIndicator
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -111,24 +113,3 @@ fun TopHeadlinesScreen(
     }
 }
 
-@Composable
-fun ErrorState(message: String, onRetry: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = message, color = MaterialTheme.colorScheme.error)
-        Button(onClick = onRetry, modifier = Modifier.padding(top = 8.dp)) {
-            Text("Retry")
-        }
-    }
-}
-
-@Composable
-private fun SizedCircularProgressIndicator(size: Dp) {
-    CircularProgressIndicator(
-        modifier = Modifier.size(size)
-    )
-}
