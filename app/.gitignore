@@ -1,0 +1,13 @@
+# App module build outputs
+/build/
+
+# ProGuard
+proguard-rules.pro.user
+
+# Test outputs
+/reports/
+/test-results/
+
+# Screenshots from tests
+/screenshots/
+/robo/
