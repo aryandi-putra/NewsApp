@@ -1,5 +1,16 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.util.Properties
+
+// Read local.properties
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        load(localPropertiesFile.inputStream())
+    }
+}
+
+val newsApiKey = localProperties.getProperty("NEWS_API_KEY", "")?.trim('"') ?: ""
 
 plugins {
     alias(libs.plugins.android.application)
@@ -30,10 +41,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "NEWS_API_KEY", "\"${project.findProperty("NEWS_API_KEY") ?: ""}\"")
+            buildConfigField("String", "NEWS_API_KEY", "\"$newsApiKey\"")
         }
         debug {
-            buildConfigField("String", "NEWS_API_KEY", "\"${project.findProperty("NEWS_API_KEY") ?: ""}\"")
+            buildConfigField("String", "NEWS_API_KEY", "\"$newsApiKey\"")
         }
     }
 
