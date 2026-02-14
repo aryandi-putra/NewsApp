@@ -7,41 +7,52 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.hunter.newsapp.presentation.bookmark.BookmarkScreen
+import com.hunter.newsapp.presentation.detail.NewsDetailScreen
+import com.hunter.newsapp.presentation.navigation.Screen
+import com.hunter.newsapp.presentation.search.SearchScreen
+import com.hunter.newsapp.presentation.splash.SplashScreen
+import com.hunter.newsapp.presentation.top_headlines.TopHeadlinesScreen
 import com.hunter.newsapp.ui.theme.NewsAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             NewsAppTheme {
+                val navController = rememberNavController()
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    NavHost(
+                        navController = navController,
+                        startDestination = Screen.Splash.route,
                         modifier = Modifier.padding(innerPadding)
-                    )
+                    ) {
+                        composable(route = Screen.Splash.route) {
+                            SplashScreen(navController = navController)
+                        }
+                        composable(route = Screen.TopHeadlines.route) {
+                            TopHeadlinesScreen()
+                        }
+                        composable(route = Screen.Search.route) {
+                            SearchScreen()
+                        }
+                        composable(route = Screen.Bookmark.route) {
+                            BookmarkScreen()
+                        }
+                        composable(route = Screen.Detail.route) { backStackEntry ->
+                            val articleUrl = backStackEntry.arguments?.getString("articleUrl") ?: ""
+                            NewsDetailScreen(articleUrl = articleUrl)
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    NewsAppTheme {
-        Greeting("Android")
     }
 }
