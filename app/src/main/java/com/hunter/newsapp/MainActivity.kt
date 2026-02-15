@@ -99,9 +99,10 @@ class MainActivity : ComponentActivity() {
                         composable(route = Screen.Bookmark.route) {
                             BookmarkScreen()
                         }
-                        composable(route = Screen.Detail.route) { backStackEntry ->
-                            val articleUrl = backStackEntry.arguments?.getString("articleUrl") ?: ""
-                            NewsDetailScreen(articleUrl = articleUrl)
+                        composable(route = Screen.Detail.route) {
+                            NewsDetailScreen(
+                                onBackClick = { navController.popBackStack() }
+                            )
                         }
                     }
                 }

@@ -34,6 +34,12 @@ class SearchViewModel @Inject constructor(
         _searchQuery.value = newQuery
     }
 
+    fun onArticleClick(article: Article) {
+        viewModelScope.launch {
+            repository.upsertArticle(article)
+        }
+    }
+
     fun toggleBookmark(article: Article) {
         viewModelScope.launch {
             repository.toggleBookmark(article)

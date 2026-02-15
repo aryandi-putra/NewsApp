@@ -61,4 +61,10 @@ class NewsRepositoryImpl @Inject constructor(
     override suspend fun getArticleByUrl(url: String): Article? {
         return database.articleDao().getArticleByUrl(url)?.toDomain()
     }
+
+    override suspend fun upsertArticle(article: Article) {
+        if (database.articleDao().getArticleByUrl(article.url) == null) {
+            database.articleDao().insertArticles(listOf(article.toEntity()))
+        }
+    }
 }

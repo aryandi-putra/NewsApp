@@ -11,4 +11,5 @@ interface NewsRepository {
     suspend fun toggleBookmark(article: Article)
     suspend fun isBookmarked(url: String): Boolean
     suspend fun getArticleByUrl(url: String): Article?
+    suspend fun upsertArticle(article: Article)
 }

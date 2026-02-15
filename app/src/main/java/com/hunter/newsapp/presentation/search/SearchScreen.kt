@@ -66,7 +66,10 @@ fun SearchScreen(
                         article?.let {
                             NewsItem(
                                 article = it,
-                                onClick = { onArticleClick(it) },
+                                onClick = { article ->
+                                    viewModel.onArticleClick(article)
+                                    onArticleClick(article)
+                                },
                                 onBookmarkClick = { viewModel.toggleBookmark(it) }
                             )
                         }
