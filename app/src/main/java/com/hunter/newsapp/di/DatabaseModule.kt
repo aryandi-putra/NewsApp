@@ -3,6 +3,7 @@ package com.hunter.newsapp.di
 import android.content.Context
 import androidx.room.Room
 import com.hunter.newsapp.data.connectivity.ConnectivityObserver
+import com.hunter.newsapp.data.connectivity.ConnectivityObserverImpl
 import com.hunter.newsapp.data.local.NewsDatabase
 import com.hunter.newsapp.data.local.dao.ArticleDao
 import dagger.Module
@@ -34,7 +35,9 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideConnectivityObserver(@ApplicationContext context: Context): ConnectivityObserver {
-        return ConnectivityObserver(context)
+    fun provideConnectivityObserver(
+        @ApplicationContext context: Context
+    ): ConnectivityObserver {
+        return ConnectivityObserverImpl(context)
     }
 }
