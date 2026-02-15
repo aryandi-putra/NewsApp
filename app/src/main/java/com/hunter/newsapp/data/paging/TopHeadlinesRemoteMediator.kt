@@ -24,14 +24,18 @@ class TopHeadlinesRemoteMediator(
     ): MediatorResult {
         val page = when (loadType) {
             LoadType.REFRESH -> {
-                val remoteKeys = getRemoteKeyClosestToPosition(state)
-                remoteKeys?.nextKey?.minus(1) ?: 1
+                // Always start from page 1 on refresh to avoid data jumping
+                1
             }
             LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
             LoadType.APPEND -> {
                 val remoteKeys = getRemoteKeyForLastItem(state)
-                val nextKey = remoteKeys?.nextKey
-                    ?: return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
+                // If no remote key found, we can't append (might be in initial load state)
+                if (remoteKeys == null) {
+                    return MediatorResult.Success(endOfPaginationReached = false)
+                }
+                val nextKey = remoteKeys.nextKey
+                    ?: return MediatorResult.Success(endOfPaginationReached = true)
                 nextKey
             }
         }
@@ -42,6 +46,17 @@ class TopHeadlinesRemoteMediator(
                 pageSize = state.config.pageSize,
                 apiKey = BuildConfig.NEWS_API_KEY
             )
+
+            // Pre-fetch existing articles before transaction to preserve timestamps/bookmarks
+            val existingArticles = mutableMapOf<String, ArticleEntity>()
+            for (dto in response.articles) {
+                val url = dto.url ?: ""
+                if (url.isNotEmpty()) {
+                    database.articleDao().getArticleByUrl(url)?.let {
+                        existingArticles[url] = it
+                    }
+                }
+            }
 
             val endOfPaginationReached = response.articles.isEmpty()
             database.withTransaction {
@@ -55,7 +70,17 @@ class TopHeadlinesRemoteMediator(
                     RemoteKey(articleUrl = it.url ?: "", prevKey = prevKey, nextKey = nextKey)
                 }
                 database.remoteKeyDao().insertAll(keys)
-                database.articleDao().insertArticles(response.articles.map { it.toEntity(isTopHeadline = true) })
+                
+                // Preserve existing cachedAt and isBookmarked from pre-fetched data
+                val articlesToInsert = response.articles.map { dto ->
+                    val url = dto.url ?: ""
+                    val existing = existingArticles[url]
+                    dto.toEntity(isTopHeadline = true).copy(
+                        cachedAt = existing?.cachedAt ?: System.currentTimeMillis(),
+                        isBookmarked = existing?.isBookmarked ?: false
+                    )
+                }
+                database.articleDao().insertArticles(articlesToInsert)
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (e: Exception) {

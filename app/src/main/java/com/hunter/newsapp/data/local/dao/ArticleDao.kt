@@ -10,7 +10,7 @@ interface ArticleDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertArticles(articles: List<ArticleEntity>)
 
-    @Query("SELECT * FROM articles WHERE isTopHeadline = 1 ORDER BY cachedAt DESC")
+    @Query("SELECT * FROM articles WHERE isTopHeadline = 1 ORDER BY cachedAt ASC")
     fun getTopHeadlines(): PagingSource<Int, ArticleEntity>
 
     @Query("SELECT * FROM articles WHERE isBookmarked = 1 ORDER BY cachedAt DESC")
