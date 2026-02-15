@@ -1,6 +1,10 @@
 package com.hunter.newsapp.data.repository
 
-import androidx.paging.*
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.hunter.newsapp.data.local.NewsDatabase
 import com.hunter.newsapp.data.mapper.toDomain
 import com.hunter.newsapp.data.mapper.toEntity

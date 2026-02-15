@@ -1,6 +1,5 @@
 package com.hunter.newsapp.di
 
-import com.hunter.newsapp.BuildConfig
 import com.hunter.newsapp.data.remote.NewsApiService
 import dagger.Module
 import dagger.Provides

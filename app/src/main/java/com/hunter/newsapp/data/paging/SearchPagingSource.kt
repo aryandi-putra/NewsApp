@@ -3,11 +3,11 @@ package com.hunter.newsapp.data.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.hunter.newsapp.BuildConfig
+import com.hunter.newsapp.data.local.dao.ArticleDao
 import com.hunter.newsapp.data.mapper.toDomain
 import com.hunter.newsapp.data.mapper.toEntity
 import com.hunter.newsapp.data.remote.NewsApiService
 import com.hunter.newsapp.domain.model.Article
-import com.hunter.newsapp.data.local.dao.ArticleDao
 
 class SearchPagingSource(
     private val apiService: NewsApiService,

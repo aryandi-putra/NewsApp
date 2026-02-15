@@ -11,6 +11,8 @@ import com.hunter.newsapp.data.local.entity.ArticleEntity
 import com.hunter.newsapp.data.local.entity.RemoteKey
 import com.hunter.newsapp.data.mapper.toEntity
 import com.hunter.newsapp.data.remote.NewsApiService
+import retrofit2.HttpException
+import java.io.IOException
 
 @OptIn(ExperimentalPagingApi::class)
 class TopHeadlinesRemoteMediator(
@@ -83,8 +85,15 @@ class TopHeadlinesRemoteMediator(
                 database.articleDao().insertArticles(articlesToInsert)
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
+        } catch (e: IOException) {
+            // Network error - return success to preserve cached data
+            return MediatorResult.Success(endOfPaginationReached = true)
+        } catch (e: HttpException) {
+            // HTTP error - also preserve cached data
+            return MediatorResult.Success(endOfPaginationReached = true)
         } catch (e: Exception) {
-            return MediatorResult.Error(e)
+            // Unexpected error - still try to preserve cache
+            return MediatorResult.Success(endOfPaginationReached = true)
         }
     }
 

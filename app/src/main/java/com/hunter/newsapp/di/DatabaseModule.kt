@@ -2,6 +2,7 @@ package com.hunter.newsapp.di
 
 import android.content.Context
 import androidx.room.Room
+import com.hunter.newsapp.data.connectivity.ConnectivityObserver
 import com.hunter.newsapp.data.local.NewsDatabase
 import com.hunter.newsapp.data.local.dao.ArticleDao
 import dagger.Module
@@ -29,5 +30,11 @@ object DatabaseModule {
     @Singleton
     fun provideArticleDao(database: NewsDatabase): ArticleDao {
         return database.articleDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideConnectivityObserver(@ApplicationContext context: Context): ConnectivityObserver {
+        return ConnectivityObserver(context)
     }
 }
