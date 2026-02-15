@@ -97,7 +97,11 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(route = Screen.Bookmark.route) {
-                            BookmarkScreen()
+                            BookmarkScreen(
+                                onArticleClick = { article ->
+                                    navController.navigate(Screen.Detail.createRoute(article.url))
+                                }
+                            )
                         }
                         composable(route = Screen.Detail.route) {
                             NewsDetailScreen(
